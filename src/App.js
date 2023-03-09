@@ -1,18 +1,31 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import Simpsons from "./components/Simpsons";
 
 const App = () => {
-  const count = useSelector((state) => state.count);
-  const name = useSelector((state) => state.name);
   const dispatch = useDispatch();
+
+  const getApiData = async () => {
+    const results = await axios.get(
+      `https://thesimpsonsquoteapi.glitch.me/quotes?count=50`
+    );
+
+    results.data.forEach((item) => {
+      item.uniqueId = Math.random();
+    });
+
+    //send them to the store
+    dispatch({ type: "SET_API_DATA", payload: results.data });
+  };
+
+  useEffect(() => {
+    getApiData();
+  }, []);
 
   return (
     <>
-      <h1>{name}</h1>
-      <p>{count}</p>
-      <button onClick={() => dispatch({ type: "INCREMENT" })}>Increment</button>
-      <button onClick={() => dispatch({ type: "DECREMENT" })}>Decrement</button>
-      <button onClick={() => dispatch({ type: "RESUT" })}>Reset</button>
+      <Simpsons getApiData={getApiData} />
     </>
   );
 };
