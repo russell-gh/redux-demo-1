@@ -1,20 +1,26 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import Todos from "./components/Todos";
+import "./App.css";
+import { SET_API_DATA } from "./redux/types";
 
 const App = () => {
-  const count = useSelector((state) => state.count);
-  const name = useSelector((state) => state.name);
   const dispatch = useDispatch();
 
-  return (
-    <>
-      <h1>{name}</h1>
-      <p>{count}</p>
-      <button onClick={() => dispatch({ type: "INCREMENT" })}>Increment</button>
-      <button onClick={() => dispatch({ type: "DECREMENT" })}>Decrement</button>
-      <button onClick={() => dispatch({ type: "RESUT" })}>Reset</button>
-    </>
-  );
+  const getTodos = async () => {
+    const { data } = await axios.get(
+      `https://jsonplaceholder.typicode.com/todos/`
+    );
+
+    dispatch({ type: SET_API_DATA, payload: data });
+  };
+
+  useEffect(() => {
+    getTodos();
+  }, []);
+
+  return <Todos />;
 };
 
 export default App;
