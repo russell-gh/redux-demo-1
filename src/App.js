@@ -1,26 +1,24 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import Todos from "./components/Todos";
+import Cart from "./components/Cart";
 import "./App.css";
 import { SET_API_DATA } from "./redux/types";
 
 const App = () => {
   const dispatch = useDispatch();
 
-  const getTodos = async () => {
-    const { data } = await axios.get(
-      `https://jsonplaceholder.typicode.com/todos/`
-    );
+  const getCartItems = async () => {
+    const { data } = await axios.get(`https://fakestoreapi.com/products`);
 
     dispatch({ type: SET_API_DATA, payload: data });
   };
 
   useEffect(() => {
-    getTodos();
+    getCartItems();
   }, []);
 
-  return <Todos />;
+  return <Cart />;
 };
 
 export default App;

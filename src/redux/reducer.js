@@ -5,30 +5,63 @@ export function reducer(state = initialState, action) {
   switch (action.type) {
     case SET_API_DATA: {
       const _state = { ...state };
-      _state.todos = action.payload;
+      _state.cart = action.payload;
       return _state;
     }
 
-    case TOGGLE_COMPLETED:
-      const index = state.todos.findIndex((todo) => todo.id === action.payload);
-      const _todos = [...state.todos];
-      _todos[index].completed = !_todos[index].completed;
-      return { ...state, todos: _todos };
+    case "SET_QUANTITY": {
+      const index = state.cart.findIndex(
+        (item) => item.id === action.payload.id
+      );
 
-    case DELETE: {
-      const index = state.todos.findIndex((todo) => todo.id === action.payload);
-      const _todos = [...state.todos];
-      _todos.splice(index, 1);
-      return { ...state, todos: _todos };
+      const cart = [...state.cart];
+
+      //in case it starts as undefined
+      cart[index].quantity =
+        cart[index].quantity === undefined ? 1 : cart[index].quantity;
+
+      cart[index].quantity = Number(action.payload.newValue);
+
+      return { ...state, cart };
     }
 
-    case UPDATE_TODO: {
-      const index = state.todos.findIndex(
-        (todo) => todo.id === action.payload.id
-      );
-      const _todos = [...state.todos];
-      _todos[index].title = action.payload.title;
-      return { ...state, todos: _todos };
+    case "INCREASE_QUANTITY": {
+      const index = state.cart.findIndex((item) => item.id === action.id);
+
+      const cart = [...state.cart];
+
+      //in case it starts as undefined
+      cart[index].quantity =
+        cart[index].quantity === undefined ? 1 : cart[index].quantity;
+
+      cart[index].quantity += 1;
+
+      return { ...state, cart };
+    }
+
+    case "DECREASE_QUANTITY": {
+      //check you did not go past end
+
+      const index = state.cart.findIndex((item) => item.id === action.id);
+
+      const cart = [...state.cart];
+
+      //in case it starts as undefined
+      cart[index].quantity =
+        cart[index].quantity === undefined ? 1 : cart[index].quantity;
+
+      cart[index].quantity -= 1;
+
+      if (cart[index].quantity < 1) cart[index].quantity = 1;
+
+      return { ...state, cart };
+    }
+
+    case DELETE: {
+      const index = state.cart.findIndex((item) => item.id === action.id);
+      const cart = [...state.cart];
+      cart.splice(index, 1);
+      return { ...state, cart };
     }
 
     default:
